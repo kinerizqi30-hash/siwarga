@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SI-WARGA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SweetAlert2 untuk pop-up keterangan berhasil/gagal -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="config.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center min-h-screen px-4 py-8">
+    <div class="bg-white/95 backdrop-blur-md p-8 md:p-10 rounded-3xl shadow-2xl max-w-md w-full border border-white/20">
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-600/30">
+                <i data-lucide="home" class="w-7 h-7"></i>
+            </div>
+            <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-blue-100">KP PABUARAN CEMARA</span>
+            <h2 class="text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">SI-WARGA</h2>
+            <p class="text-slate-500 text-xs mt-1">RT 03 / RW 02 • Portal Layanan & Iuran Digital</p>
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="grid grid-cols-2 bg-slate-100 p-1.5 rounded-2xl mb-6 text-sm font-semibold">
+            <button type="button" id="tabWarga" onclick="switchMode('warga')" class="py-2.5 rounded-xl bg-white text-blue-700 shadow-sm transition-all flex items-center justify-center gap-2">
+                <i data-lucide="user" class="w-4 h-4"></i> Warga
+            </button>
+            <button type="button" id="tabAdmin" onclick="switchMode('admin')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4"></i> Pengurus
+            </button>
+        </div>
+
+        <!-- Form Login Warga -->
+        <form id="formLoginWarga" onsubmit="loginWarga(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">NIK (16 Digit)</label>
+                <div class="relative">
+                    <i data-lucide="credit-card" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                    <input type="text" name="nik" required placeholder="Masukkan 16 digit NIK" class="w-full border border-slate-200 bg-slate-50/50 rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                    <input type="password" id="passWarga" name="password" required placeholder="••••••••" class="w-full border border-slate-200 bg-slate-50/50 rounded-xl pl-10 pr-10 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition">
+                    <button type="button" onclick="togglePass('passWarga')" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" id="btnLoginWarga" class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-600/25 transition-all flex items-center justify-center gap-2">
+                <span>Masuk sebagai Warga</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+            <p class="text-sm text-center text-slate-600 pt-3">Belum terdaftar? <a href="index.html" class="text-blue-600 font-bold hover:underline">Registrasi Warga Baru</a></p>
+        </form>
+
+        <!-- Form Login Admin -->
+        <form id="formLoginAdmin" onsubmit="loginAdmin(event)" class="space-y-4 hidden">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Username Admin</label>
+                <div class="relative">
+                    <i data-lucide="user-cog" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                    <input type="text" name="username" required placeholder="admin" class="w-full border border-slate-200 bg-slate-50/50 rounded-xl pl-10 pr-4 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-800/20 focus:border-slate-800 transition">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Password Admin</label>
+                <div class="relative">
+                    <i data-lucide="key-round" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                    <input type="password" id="passAdmin" name="password" required placeholder="••••••••" class="w-full border border-slate-200 bg-slate-50/50 rounded-xl pl-10 pr-10 py-3 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-800/20 focus:border-slate-800 transition">
+                    <button type="button" onclick="togglePass('passAdmin')" class="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" id="btnLoginAdmin" class="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white font-bold py-3 rounded-xl shadow-lg shadow-slate-900/25 transition-all flex items-center justify-center gap-2">
+                <span>Masuk Panel Admin</span>
+                <i data-lucide="shield" class="w-4 h-4"></i>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function switchMode(mode) {
+            const formWarga = document.getElementById('formLoginWarga');
+            const formAdmin = document.getElementById('formLoginAdmin');
+            const tabWarga = document.getElementById('tabWarga');
+            const tabAdmin = document.getElementById('tabAdmin');
+
+            if (mode === 'warga') {
+                formWarga.classList.remove('hidden');
+                formAdmin.classList.add('hidden');
+                tabWarga.className = "py-2.5 rounded-xl bg-white text-blue-700 shadow-sm transition-all flex items-center justify-center gap-2";
+                tabAdmin.className = "py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-2";
+            } else {
+                formWarga.classList.add('hidden');
+                formAdmin.classList.remove('hidden');
+                tabAdmin.className = "py-2.5 rounded-xl bg-white text-slate-900 shadow-sm transition-all flex items-center justify-center gap-2";
+                tabWarga.className = "py-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all flex items-center justify-center gap-2";
+            }
+        }
+
+        function loginWarga(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('btnLoginWarga');
+            btn.disabled = true;
+            btn.innerText = "Memverifikasi...";
+
+            const data = {
+                action: 'login',
+                nik: form.nik.value.trim(),
+                password: form.password.value
+            };
+
+            fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
+            .then(res => res.json())
+            .then(res => {
+                if (res.result === 'success') {
+                    localStorage.setItem('si_warga_user', JSON.stringify(res.user));
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Berhasil!',
+                        text: `Selamat datang, ${res.user.nama_lengkap}. Mengalihkan ke Dashboard...`,
+                        timer: 1600,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = 'dashboard.html';
+                    });
+                } else {
+                    // Pop-up keterangan password / NIK salah
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Gagal',
+                        text: res.message || "NIK atau Password salah. Silakan periksa kembali.",
+                        confirmButtonColor: '#2563eb'
+                    });
+                    btn.disabled = false;
+                    btn.innerText = "Masuk sebagai Warga";
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Koneksi Terputus',
+                    text: 'Terjadi kesalahan koneksi ke server.',
+                    confirmButtonColor: '#2563eb'
+                });
+                btn.disabled = false;
+                btn.innerText = "Masuk sebagai Warga";
+            });
+        }
+
+        function loginAdmin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = document.getElementById('btnLoginAdmin');
+            btn.disabled = true;
+            btn.innerText = "Memverifikasi Admin...";
+
+            const data = {
+                action: 'login_admin',
+                username: form.username.value.trim(),
+                password: form.password.value
+            };
+
+            fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
+            .then(res => res.json())
+            .then(res => {
+                if (res.result === 'success') {
+                    localStorage.setItem('si_warga_admin', 'true');
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Admin Berhasil!',
+                        text: 'Mengalihkan ke Panel Admin...',
+                        timer: 1600,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = 'laporan_admin.html';
+                    });
+                } else {
+                    // Pop-up keterangan password / username admin salah
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Admin Gagal',
+                        text: res.message || "Username atau Password Admin salah.",
+                        confirmButtonColor: '#0f172a'
+                    });
+                    btn.disabled = false;
+                    btn.innerText = "Masuk Panel Admin";
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Koneksi Terputus',
+                    text: 'Terjadi kesalahan koneksi ke server.',
+                    confirmButtonColor: '#0f172a'
+                });
+                btn.disabled = false;
+                btn.innerText = "Masuk Panel Admin";
+            });
+        }
+    </script>
+</body>
+</html>

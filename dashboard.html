@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Warga - SI-WARGA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Config & Auth Script -->
+    <script src="config.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100/70 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-blue-600 selection:text-white">
+
+    <!-- Navbar Full Layar -->
+    <nav class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white shadow-md sticky top-0 z-50 border-b border-white/10">
+        <div class="w-full px-6 lg:px-10 py-4 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 backdrop-blur-md p-2.5 rounded-2xl border border-white/20 shadow-inner">
+                    <i class="fa-solid fa-house-chimney-user text-blue-100 text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight block leading-tight">SI-WARGA</span>
+                    <span class="text-[11px] text-blue-200 font-medium tracking-wide">Portal Layanan & Iuran RT 03</span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+                <a href="dashboard.html" class="px-4 py-2 rounded-xl bg-white text-blue-800 font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+                </a>
+                <a href="pembayaran.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wallet opacity-80"></i><span>Pembayaran</span>
+                </a>
+                <a href="laporan.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-clock-rotate-left opacity-80"></i><span>Laporan</span>
+                </a>
+                <a href="profil.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user opacity-80"></i><span>Profile</span>
+                </a>
+                <button onclick="logout()"
+                    class="ml-2 bg-rose-500/90 hover:bg-rose-600 active:scale-95 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten Utama Full Layar (W-full dengan padding horizontal proporsional) -->
+    <main class="w-full px-6 lg:px-10 py-8 flex-1 space-y-8">
+
+        <!-- Banner Hero Profil Warga -->
+        <div class="relative overflow-hidden bg-gradient-to-tr from-blue-700 via-blue-600 to-indigo-700 text-white p-8 lg:p-10 rounded-3xl shadow-xl shadow-blue-600/15 border border-blue-500/30">
+            <!-- Elemen Dekorasi Estetik -->
+            <div class="absolute -right-12 -top-12 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute right-24 -bottom-20 w-52 h-52 bg-indigo-400/20 rounded-full blur-xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <span class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/25 text-blue-100 text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-300"></i> Warga Terdaftar • RT 03 / RW 02
+                    </span>
+                    <h1 class="text-3xl lg:text-4xl font-extrabold tracking-tight" id="namaWarga">Selamat Datang</h1>
+                    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-blue-100 text-sm pt-1">
+                        <span class="flex items-center gap-2 bg-black/15 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+                            <i class="fa-regular fa-id-card text-blue-200"></i> NIK: <span id="nikWarga" class="font-mono font-bold text-white tracking-wider"></span>
+                        </span>
+                        <span class="flex items-center gap-2 bg-black/15 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+                            <i class="fa-solid fa-location-dot text-blue-200"></i> <span id="alamatWarga"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <a href="pembayaran.html"
+                    class="bg-white text-blue-700 hover:bg-blue-50 active:scale-95 px-7 py-4 rounded-2xl font-bold text-sm shadow-lg shadow-black/10 transition-all flex items-center justify-center gap-3 shrink-0 hover:shadow-xl">
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                        <i class="fa-solid fa-wallet text-sm"></i>
+                    </div>
+                    <span>Bayar Iuran Sekarang</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Iuran Bulan Ini (Grid Lebar Penuh) -->
+        <div class="bg-white p-7 lg:p-8 rounded-3xl shadow-sm border border-slate-200/80">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
+                        <h2 class="font-extrabold text-slate-900 text-xl tracking-tight">Status Iuran Bulan Ini (<span id="labelBulanIni" class="text-blue-600"></span>)</h2>
+                    </div>
+                    <p class="text-slate-500 text-xs mt-1">Status otomatis diperbarui setelah pembayaran dikonfirmasi oleh sistem.</p>
+                </div>
+                <a href="laporan.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/70 px-4 py-2.5 rounded-xl text-xs font-bold transition self-start sm:self-auto shadow-sm">
+                    <span>Lihat Semua Riwayat</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Kartu Status Sampah -->
+                <div class="border border-slate-200/80 rounded-2xl p-6 flex justify-between items-center bg-gradient-to-r from-emerald-50/50 via-slate-50/30 to-white hover:shadow-md hover:border-emerald-200 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-200 shrink-0">
+                            <i class="fa-solid fa-recycle text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Iuran Kebersihan</p>
+                            <p class="font-extrabold text-slate-900 text-xl mt-0.5">Rp 20.000 <span class="text-xs font-normal text-slate-400">/ bln</span></p>
+                        </div>
+                    </div>
+                    <span id="statusSampah" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-200 text-slate-600 animate-pulse tracking-wide">Mengecek...</span>
+                </div>
+
+                <!-- Kartu Status WiFi -->
+                <div class="border border-slate-200/80 rounded-2xl p-6 flex justify-between items-center bg-gradient-to-r from-indigo-50/50 via-slate-50/30 to-white hover:shadow-md hover:border-indigo-200 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-200 shrink-0">
+                            <i class="fa-solid fa-wifi text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Iuran WiFi Warga</p>
+                            <p class="font-extrabold text-slate-900 text-xl mt-0.5">Rp 125.000 <span class="text-xs font-normal text-slate-400">/ bln</span></p>
+                        </div>
+                    </div>
+                    <span id="statusWifi" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-slate-200 text-slate-600 animate-pulse tracking-wide">Mengecek...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Papan Informasi & Kontak Darurat (Grid Lebar Penuh) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Papan Informasi RT 03 -->
+            <div class="lg:col-span-5 bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-white border border-amber-200/80 p-7 rounded-3xl shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-200 shrink-0">
+                            <i class="fa-solid fa-bullhorn text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-amber-950 text-lg leading-tight">Papan Informasi RT 03</h3>
+                            <span class="text-xs font-semibold text-amber-700">Pengumuman & Jadwal Rutin</span>
+                        </div>
+                    </div>
+
+                    <ul class="text-sm text-amber-900/90 space-y-4 font-medium">
+                        <li class="flex items-start gap-3.5 bg-white/70 p-3.5 rounded-2xl border border-amber-200/60 shadow-sm">
+                            <i class="fa-solid fa-circle-check text-amber-600 shrink-0 mt-0.5"></i>
+                            <span>Pembayaran iuran bulanan paling lambat tanggal <strong>10 setiap bulannya</strong>.</span>
+                        </li>
+                        <li class="flex items-start gap-3.5 bg-white/70 p-3.5 rounded-2xl border border-amber-200/60 shadow-sm">
+                            <i class="fa-solid fa-circle-check text-amber-600 shrink-0 mt-0.5"></i>
+                            <span>Pengangkutan sampah rutin setiap hari <strong>Selasa, Kamis, dan Sabtu</strong> pagi.</span>
+                        </li>
+                        <li class="flex items-start gap-3.5 bg-white/70 p-3.5 rounded-2xl border border-amber-200/60 shadow-sm">
+                            <i class="fa-solid fa-circle-check text-amber-600 shrink-0 mt-0.5"></i>
+                            <span>Simpan bukti transfer atau cetak kwitansi digital dari menu <strong>Riwayat</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Kontak Darurat Pengurus -->
+            <div class="lg:col-span-7 bg-white border border-slate-200/80 p-7 rounded-3xl shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-sm shrink-0">
+                            <i class="fa-solid fa-phone-volume text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-lg leading-tight">Kontak Darurat Pengurus</h3>
+                            <p class="text-slate-500 text-xs mt-0.5">Hubungi langsung via WhatsApp jika ada keperluan mendesak.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <a href="https://wa.me/6281234567890" target="_blank"
+                            class="group bg-slate-50/80 hover:bg-emerald-50/60 p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-300 transition-all flex flex-col justify-between shadow-sm">
+                            <div>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 group-hover:text-emerald-600 block">Ketua RT 03</span>
+                                <p class="font-bold text-slate-800 text-sm mt-1">Bpk. H. Ahmad</p>
+                            </div>
+                            <span class="text-xs text-emerald-600 font-bold mt-5 inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA
+                            </span>
+                        </a>
+
+                        <a href="https://wa.me/6289876543210" target="_blank"
+                            class="group bg-slate-50/80 hover:bg-emerald-50/60 p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-300 transition-all flex flex-col justify-between shadow-sm">
+                            <div>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 group-hover:text-emerald-600 block">Ketua RW 02</span>
+                                <p class="font-bold text-slate-800 text-sm mt-1">Bpk. Joko Santoso</p>
+                            </div>
+                            <span class="text-xs text-emerald-600 font-bold mt-5 inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA
+                            </span>
+                        </a>
+
+                        <a href="https://wa.me/6281122334455" target="_blank"
+                            class="group bg-slate-50/80 hover:bg-emerald-50/60 p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-300 transition-all flex flex-col justify-between shadow-sm">
+                            <div>
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 group-hover:text-emerald-600 block">Pos Keamanan</span>
+                                <p class="font-bold text-slate-800 text-sm mt-1">Petugas Jaga</p>
+                            </div>
+                            <span class="text-xs text-emerald-600 font-bold mt-5 inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Chat WA
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Full Layar -->
+    <footer class="bg-white text-center py-5 text-xs text-slate-500 border-t border-slate-200/80 mt-12 shadow-inner">
+        <div class="w-full px-6 lg:px-10 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span class="font-semibold text-slate-600">&copy; 2026 SI-WARGA RT 03 / RW 02</span>
+            <span class="text-slate-400">Sistem Informasi Administrasi & Iuran Warga Digital</span>
+        </div>
+    </footer>
+
+    <!-- Script Asli Dipertahankan 100% -->
+    <script>
+        const user = cekAuthWarga();
+        const bulanIni = getBulanSekarang();
+
+        document.getElementById('namaWarga').innerText = "Halo, " + user.nama_lengkap;
+        document.getElementById('nikWarga').innerText = user.nik;
+        document.getElementById('alamatWarga').innerText = user.alamat_domisili;
+        document.getElementById('labelBulanIni').innerText = bulanIni;
+
+        function normalisasiPeriode(val) {
+            if (!val) return "";
+            const str = String(val).trim();
+            if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+                const bulanIndo = [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ];
+                const d = new Date(str);
+                if (!isNaN(d.getTime())) {
+                    return `${bulanIndo[d.getMonth()]} ${d.getFullYear()}`;
+                }
+            }
+            return str;
+        }
+
+        fetch(`${CONFIG.SCRIPT_URL}?action=get_riwayat&nik=${user.nik}`)
+            .then(res => res.json())
+            .then(res => {
+                const elSampah = document.getElementById('statusSampah');
+                const elWifi = document.getElementById('statusWifi');
+                elSampah.classList.remove('animate-pulse');
+                elWifi.classList.remove('animate-pulse');
+
+                if (res.result === 'success') {
+                    const lunasSampah = res.riwayat.find(r => {
+                        const jenis = String(r.jenis || "").toLowerCase().trim();
+                        const periode = normalisasiPeriode(r.periode).toLowerCase().trim();
+                        const status = String(r.status || "").toLowerCase().trim();
+                        return jenis.includes('sampah') && periode === bulanIni.toLowerCase().trim() && status === 'lunas';
+                    });
+
+                    const lunasWifi = res.riwayat.find(r => {
+                        const jenis = String(r.jenis || "").toLowerCase().trim();
+                        const periode = normalisasiPeriode(r.periode).toLowerCase().trim();
+                        const status = String(r.status || "").toLowerCase().trim();
+                        return jenis.includes('wifi') && periode === bulanIni.toLowerCase().trim() && status === 'lunas';
+                    });
+
+                    if (lunasSampah) {
+                        elSampah.innerText = "✓ Lunas";
+                        elSampah.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm tracking-wide";
+                    } else {
+                        elSampah.innerText = "Belum Bayar";
+                        elSampah.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-100 text-rose-700 border border-rose-200 shadow-sm tracking-wide";
+                    }
+
+                    if (lunasWifi) {
+                        elWifi.innerText = "✓ Lunas";
+                        elWifi.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm tracking-wide";
+                    } else {
+                        elWifi.innerText = "Belum Bayar";
+                        elWifi.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-rose-100 text-rose-700 border border-rose-200 shadow-sm tracking-wide";
+                    }
+                }
+            })
+            .catch(() => {
+                document.getElementById('statusSampah').innerText = "Gagal memuat";
+                document.getElementById('statusWifi').innerText = "Gagal memuat";
+            });
+    </script>
+</body>
+
+</html>

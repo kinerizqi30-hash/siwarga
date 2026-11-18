@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Transaksi - SI-WARGA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 untuk notifikasi modal/alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Config & Auth Script -->
+    <script src="config.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Cetak Khusus Kwitansi */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #modalKwitansi, #modalKwitansi * {
+                visibility: visible;
+            }
+            #modalKwitansi {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100/70 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-blue-600 selection:text-white">
+
+    <!-- Navbar Full Layar -->
+    <nav class="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 text-white shadow-md sticky top-0 z-50 border-b border-white/10">
+        <div class="w-full px-6 lg:px-10 py-4 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 backdrop-blur-md p-2.5 rounded-2xl border border-white/20 shadow-inner">
+                    <i class="fa-solid fa-house-chimney-user text-blue-100 text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight block leading-tight">SI-WARGA</span>
+                    <span class="text-[11px] text-blue-200 font-medium tracking-wide">Portal Layanan & Iuran RT 03</span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+                <a href="dashboard.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie opacity-80"></i><span>Dashboard</span>
+                </a>
+                <a href="pembayaran.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wallet opacity-80"></i><span>Pembayaran</span>
+                </a>
+                <a href="laporan.html" class="px-4 py-2 rounded-xl bg-white text-blue-800 font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-clock-rotate-left"></i><span>Laporan</span>
+                </a>
+                <a href="profil.html" class="px-4 py-2 rounded-xl text-blue-100 hover:bg-white/10 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user opacity-80"></i><span>Profile</span>
+                </a>
+                <button onclick="logout()"
+                    class="ml-2 bg-rose-500/90 hover:bg-rose-600 active:scale-95 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten Utama Full Layar -->
+    <main class="w-full px-6 lg:px-10 py-8 flex-1 space-y-8">
+
+        <!-- Header Halaman -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100/80 px-3.5 py-1.5 rounded-full mb-2 shadow-sm">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Arsip Keuangan Warga
+                </span>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Riwayat & Laporan Pembayaran</h1>
+                <p class="text-slate-500 text-sm mt-1">Daftar lengkap seluruh transaksi iuran Anda. Klik tombol <strong>Kwitansi</strong> untuk melihat bukti resmi.</p>
+            </div>
+            <a href="pembayaran.html" class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs sm:text-sm font-bold px-5 py-3 rounded-2xl shadow-md shadow-blue-600/20 transition">
+                <i class="fa-solid fa-plus"></i>
+                <span>Bayar Iuran Baru</span>
+            </a>
+        </div>
+
+        <!-- Tabel Data Modern (Lebar Penuh) -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-50/90 border-b border-slate-200/80 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                            <th class="p-5">Waktu</th>
+                            <th class="p-5">Jenis Iuran</th>
+                            <th class="p-5">Periode</th>
+                            <th class="p-5">Nominal</th>
+                            <th class="p-5">Metode</th>
+                            <th class="p-5">Status</th>
+                            <th class="p-5 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelLaporan" class="divide-y divide-slate-100 text-slate-700">
+                        <tr>
+                            <td colspan="7" class="p-12 text-center text-slate-400">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <i class="fa-solid fa-circle-notch fa-spin text-2xl text-blue-600"></i>
+                                    <span class="text-xs font-semibold">Memuat data riwayat transaksi...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Kwitansi Digital Modern -->
+    <div id="modalKwitansi" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50 transition-all">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 transform scale-100 transition-transform">
+            
+            <!-- Header Kwitansi -->
+            <div class="text-center border-b border-dashed border-slate-200 pb-4 mb-5 relative">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2.5 shadow-sm">
+                    <i class="fa-solid fa-receipt text-xl"></i>
+                </div>
+                <h3 class="font-extrabold text-lg text-slate-900 tracking-tight">KWITANSI IURAN WARGA</h3>
+                <p class="text-xs font-medium text-slate-400 mt-0.5">SI-Warga RT 03 / RW 02</p>
+            </div>
+
+            <!-- Detail Kwitansi -->
+            <div class="space-y-3 text-sm text-slate-600" id="isiKwitansi">
+                <!-- Diisi Dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Footer Modal / Tombol Aksi -->
+            <div class="mt-7 flex gap-3 no-print">
+                <button onclick="window.print()" 
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white py-3 rounded-xl text-xs sm:text-sm font-bold shadow-sm shadow-blue-200 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Cetak / PDF</span>
+                </button>
+                <button onclick="tutupKwitansi()" 
+                    class="flex-1 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 py-3 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Tutup</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Full Layar -->
+    <footer class="bg-white text-center py-5 text-xs text-slate-500 border-t border-slate-200/80 mt-12 shadow-inner">
+        <div class="w-full px-6 lg:px-10 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span class="font-semibold text-slate-600">&copy; 2026 SI-WARGA RT 03</span>
+            <span class="text-slate-400">Sistem Informasi Administrasi & Iuran Warga Digital</span>
+        </div>
+    </footer>
+
+    <!-- Script Asli + Perubahan Tampilan Render Tabel & Modal -->
+    <script>
+        const user = cekAuthWarga();
+        let dataRiwayat = [];
+
+        fetch(`${CONFIG.SCRIPT_URL}?action=get_riwayat&nik=${user.nik}`)
+        .then(res => res.json())
+        .then(res => {
+            const tbody = document.getElementById('tabelLaporan');
+            tbody.innerHTML = "";
+            if (res.result === 'success' && res.riwayat.length > 0) {
+                dataRiwayat = res.riwayat;
+                res.riwayat.forEach((item, idx) => {
+                    const badgeColor = item.status === 'Lunas'
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : 'bg-amber-100 text-amber-800 border border-amber-200';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-5 text-xs font-medium text-slate-500">${item.tanggal}</td>
+                            <td class="p-5 font-bold text-slate-800">${item.jenis}</td>
+                            <td class="p-5 text-xs font-semibold text-slate-600">${item.periode}</td>
+                            <td class="p-5 font-bold text-slate-900">${formatRupiah(item.nominal)}</td>
+                            <td class="p-5 text-xs text-slate-600">${item.metode}</td>
+                            <td class="p-5"><span class="${badgeColor} px-3.5 py-1.5 rounded-full text-[11px] font-extrabold shadow-sm">${item.status}</span></td>
+                            <td class="p-5 text-center">
+                                <button onclick="bukaKwitansi(${idx})" class="inline-flex items-center gap-1.5 text-xs bg-blue-50 hover:bg-blue-100 active:scale-95 text-blue-700 font-bold px-4 py-2 rounded-xl border border-blue-200/80 shadow-sm transition">
+                                    <i class="fa-solid fa-receipt text-[11px]"></i> Kwitansi
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-12 text-center text-slate-400">
+                            <div class="flex flex-col items-center justify-center gap-2">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                                    <i class="fa-solid fa-folder-open text-xl"></i>
+                                </div>
+                                <span class="font-semibold text-sm text-slate-600">Belum ada riwayat transaksi.</span>
+                                <span class="text-xs text-slate-400">Transaksi yang Anda lakukan akan muncul otomatis di sini.</span>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
+        })
+        .catch(() => {
+            const tbody = document.getElementById('tabelLaporan');
+            tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-rose-500 font-semibold text-xs">Gagal memuat data dari server. Periksa koneksi Anda.</td></tr>`;
+        });
+
+        function bukaKwitansi(idx) {
+            const item = dataRiwayat[idx];
+            document.getElementById('isiKwitansi').innerHTML = `
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Nama Warga</span><span class="font-bold text-slate-800">${user.nama_lengkap}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">NIK</span><span class="font-mono text-xs font-bold text-slate-700">${user.nik}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Alamat</span><span class="text-xs font-medium text-slate-700">${user.alamat_domisili || '-'}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Tanggal Bayar</span><span class="text-xs font-semibold text-slate-700">${item.tanggal}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Jenis Iuran</span><span class="font-bold text-blue-600">${item.jenis}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Periode Bulan</span><span class="text-xs font-semibold text-slate-700">${item.periode}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Metode Bayar</span><span class="text-xs font-medium text-slate-700">${item.metode}</span></div>
+                <div class="flex justify-between py-1 border-b border-slate-100"><span class="text-slate-400 text-xs">Catatan</span><span class="text-xs font-medium text-slate-700">${item.catatan || '-'}</span></div>
+                <div class="flex justify-between items-center pt-2 mt-2 bg-emerald-50/70 p-3 rounded-2xl border border-emerald-100">
+                    <span class="font-extrabold text-slate-700 text-sm">Total Bayar:</span>
+                    <span class="font-extrabold text-emerald-600 text-base">${formatRupiah(item.nominal)}</span>
+                </div>
+                <div class="flex justify-between items-center px-1 pt-1">
+                    <span class="text-slate-400 text-xs">Status Verifikasi</span>
+                    <span class="font-bold text-emerald-600 text-xs bg-emerald-100 px-2.5 py-0.5 rounded-full">${item.status}</span>
+                </div>
+            `;
+            const modal = document.getElementById('modalKwitansi');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function tutupKwitansi() {
+            const modal = document.getElementById('modalKwitansi');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
+</body>
+
+</html>
